@@ -1,0 +1,399 @@
+\documentclass[compress]{beamer}
+% --------------------------------------------------------------------------
+% Common packages
+% --------------------------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[mathscr]{euscript}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Erweiterte Tabellenfunktionen
+\usepackage{tabularx,ragged2e}
+\usepackage{booktabs}
+% for the transition diagram
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\setbeameroption{show notes}
+% Listingserweiterung
+\usepackage{listings}
+\lstset{ %
+  language=[LaTeX]TeX,
+  basicstyle=\normalsize\ttfamily,
+  keywordstyle=,
+  numbers=left,
+  numberstyle=\tiny\ttfamily,
+  stepnumber=1,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  breaklines=true,
+  frame=tb,
+  framerule=0.5pt,
+  tabsize=4,
+  framexleftmargin=0.5em,
+  framexrightmargin=0.5em,
+  xleftmargin=0.5em,
+  xrightmargin=0.5em
+}
+
+
+% ------------------------------------------------------------------------------
+% Tikz
+% ------------------------------------------------------------------------------
+\usetikzlibrary{arrows,positioning}
+\tikzset{
+  % Define standard arrow tip
+  >=stealth',
+  % Define style for boxes
+  punkt/.style={
+    rectangle,
+    rounded corners,
+    draw=black, very thick,
+    text width=6.5em,
+    minimum height=2em,
+    text centered},
+  % Define arrow style
+  pil/.style={
+    ->,
+    thick,
+    shorten <=2pt,
+    shorten >=2pt,}
+}
+
+% NaturProzess
+
+
+
+
+\newcommand{\captionslide}[1]{
+  {\setbeamercolor{background canvas}{bg=hsrmWarmGreyLight}
+    \begin{frame}[plain]
+      \addtocounter{framenumber}{-1}
+      \begin{center}
+        \vfill\usebeamerfont{section
+          title}\textcolor{black}{\MakeUppercase{#1}}\vfill
+      \end{center}
+    \end{frame}
+  }
+}
+
+
+
+% --------------------------------------------------------------------------
+% Load theme
+% --------------------------------------------------------------------------
+\usetheme[nosectionpages]{hsrm}
+
+
+\usepackage{dtklogos} % must be loaded after theme
+\usepackage{tikz}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Math Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{plain} %to change the headings as suggested by Kleiner
+\newtheorem{lem}[equation]{Lemma}
+\newtheorem{prop}[equation]{Proposition}
+\newtheorem{thm}[equation]{Theorem}
+\newtheorem{cor}[equation]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[equation]{Definition}
+\newtheorem{ques}[equation]{Question}
+\theoremstyle{remark}
+\newtheorem{exa}[equation]{Example}
+\def\ccgroup{\mathbb{G}}%Carnot group
+\def\hmeas#1.{\mathscr{H}^{\setbox0=\hbox{$#1\unskip$}\ifdim\wd0=0pt 1
+    \else #1\fi}} %Hausdorff measure with default argument by
+\def\real{{\mathbb{R}}}
+\def\zahlen{{\mathbb Z}}
+\def\Xint#1{\mathchoice
+   {\XXint\displaystyle\textstyle{#1}}%
+   {\XXint\textstyle\scriptstyle{#1}}%
+   {\XXint\scriptstyle\scriptscriptstyle{#1}}%
+   {\XXint\scriptscriptstyle\scriptscriptstyle{#1}}%
+   \!\int}
+\def\XXint#1#2#3{{\setbox0=\hbox{$#1{#2#3}{\int}$}
+     \vcenter{\hbox{$#2#3$}}\kern-.5\wd0}}
+\def\ddashint{\Xint=}
+\def\av{\Xint-}
+\DeclareMathOperator\diam{diam}%diametre
+\def\biglip{\text{\rm Lip}} %local lipschitz constant
+\def\glip#1.{{\bf L}(#1)} %global Lipschitz constant
+\def\smllip{\text{\rm lip}} %minimal variation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Calculus on Metric Spaces: Beyond the Poincar\'e Inequality}
+\date{}
+\author{Andrea Schioppa \\ Data Science, \\ Booking.com BV}
+\subtitle{New Examples of Differentiability Spaces}
+
+\begin{document}
+\maketitle
+\addtocounter{framenumber}{-1}
+\note{
+  \textbf{Abstract:} \\
+  We discuss a framework introduced by J.~Cheeger (1999) to
+  differentiate Lipschitz maps defined on metric measure spaces which
+  admit Poincar\'e inequalities, and discuss (the first) examples on which it is
+  still possible to differentiate despite the infinitesimal geometry being
+  incompatible with the Poincar\'e inequality.
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Differentiability spaces}
+\captionslide{Differentiability spaces: why we care?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Geometric Group Theory}
+  \begin{itemize}
+  \item Mostow (1968), ``Quasi-conformal mappings in $n$-space and
+  the rigidity of the hyperbolic space forms''.
+  \item Pansu (1989), ``Carnot-Caratheodory Metrics and
+    quasi-Isometries of rank-one symmetric spaces''
+  \item Pansu's Rademacher Theorem: Any Lipschitz or
+    quasi-Conformal map $f:\ccgroup_1\to\ccgroup_2$ between Carnot
+    groups is differentiable at $\hmeas\dim\ccgroup_1.$-a.e.~point. The
+    derivative is a group homomorphism commuting with dilations. 
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{The abstract Poincar\'e inequality (1)}
+  \begin{itemize}
+  \item Heinonen \& Koskela (1998), ``Quasiconformal maps in metric
+    spaces with controlled geometry''
+  \item The key ingredients are \textbf{doubling measures} and
+    \textbf{the Poincar\'e inequality} (PI-spaces)
+  \item Rigidity for Fuchsian buildings, Sobolev spaces, $p$-harmonic
+    maps, \dots
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{The abstract Poincar\'e inequality
+    (2)}
+  \begin{itemize}
+  \item  The classical $(1,p)$-Poincar\'e inequality:
+    \begin{equation}
+        \av_{B}|u-u_B|\,d\hmeas N.
+        \le C \diam(B)\,\left(
+        \av_B\|\nabla u\|^p\,d\hmeas N.
+      \right)^{1/p}.
+    \end{equation}
+  \item In the metric setting: $\hmeas N.\to\mu$,
+    $\|\nabla u\|\to$ a ``surrogate'' $g$ (\textbf{upper gradient}).
+  \item If $u$ is Lipschitz can take:
+      \begin{equation}
+    \biglip u(x)=\limsup_{y\ne x\to x}\frac{|u(y)-u(x)|}{d(x,y)}.
+  \end{equation}
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{A finite-dimensionality argument}
+  \begin{itemize}
+  \item Cheeger (1999): If $\mu$ is doubling, at $\mu$-a.e.~$f$ the
+    blow-ups of $f$ are $p$-harmonic and the gradient has constant
+    modulus \textbf{(generalized linearity)}.
+  \item Cheeger (1999): In a PI-space a linear subspace of generalized-linear
+    functions is finite-dimensional.
+  \item Cheeger's Rademacher: Fix Lipschitz coordinate
+     functions $\{\psi_i\}_{i=1}^N$; any $f$ is differentiable
+     $\mu$~a.e.:
+         \begin{equation}
+    \label{eq:alt_rad_ch}
+      f(x')=f(x)+\sum_{i=1}^{N}a_i(x)\left(\psi_{i}(x')-\psi_{i}(x)\right)+o\left(d_X(x,x')\right). 
+    \end{equation}
+
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Applications}
+  \begin{itemize}
+  \item Legitimates first-order calculus for PI-spaces (e.g.~now
+    $\biglip f$ is really $\|df\|$).
+  \item Provides non-embeddability results $f:X\to\real^n$.
+  \item The idea of differentiation has been generalized to other
+    targets: $f:X\to L^\infty$ (\textbf{metric differentiation})) and
+    $f:X\to L^1$ (\textbf{the cut-metric representation} and a
+    counterexample of Cheeger \& Kleiner to the Goemans-Linial conjecture).
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\section{The derivative along curves}
+\captionslide{Constructing the derivative along curves: Alberti
+  representations}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Differentiability spaces}
+  \begin{itemize}
+  \item A metric measure space $(X,\mu)$ such that any Lipschitz
+    $f:X\to\real$ is differentiable $\mu$-a.e.~is a
+    \textbf{differentiability space}.
+  \item Keith 2004, ``A differentiabile structure for metric measure
+    spaces'': replace the Poincar\'e inequality with the ``Lip-lip''
+    inequality: $\mu$-a.e.:
+    \begin{equation}
+      \biglip f \le K \smllip f,
+    \end{equation}
+    where
+    \begin{equation}
+      \smllip f(x) = \liminf_{r\to0}\sup_{y\in B(x,r)}\frac{|f(x)-f(y)|}{r}.
+    \end{equation}
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Drawbacks}
+  \begin{itemize}
+  \item Both Cheeger \& Keith's proof are non-constructive. No curves.
+  \item Cheeger proved better properties for PI-spaces (e.g.~$\biglip
+    f = \smllip f$, stability of PI under blow-up).
+  \item No example of Keith's spaces not countable unions of
+    positive-measure subsets of PI-spaces.
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{The PI-rectifiability
+    ``conjecture''}
+  \begin{itemize}
+  \item \textbf{Strong form}, Cheeger-Kleiner-S.~(2016): Any differentiability
+    space is a countable union of positive-measure subsets of
+    PI-spaces.
+  \item \textbf{Weak form}: A.e.~the blow-ups/tangents of a differentiability
+    space are PI-spaces.
+  \item Held belief to be true (had a paper rejected as the ``expert''
+    strongly believed in it),
+    the PI-inequality should be ``necessary'' to have calculus.
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{The Radon-Nikodym property}
+  \begin{itemize}
+  \item An \textbf{RNP-Banach space} $B$:
+    any Lipschitz $f:\real\to B$ is differentiable $\mu$-a.e; $c_0$,
+    $l^p$ ($1\le p<\infty$), $L^p([0,1])$ ($1<p<\infty$)
+  \item Cheeger \& Kleiner (2009): ``Differentiability of Lipschitz
+    maps from metric
+    measure spaces to Banach spaces with the
+    Radon–Nikodym property'': if $(X,\mu)$ is PI, $f:X\to B$ is
+    differentiabile
+  \item Study the derivative along curves; Preiss' observation: $\mu$
+    must admit an Alberti representation.
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Alberti representations}
+  \begin{itemize}
+  \item An Alberti representation is a Fubini-like decomposition of
+    $\mu$:
+    \begin{equation}
+      \mu = \int_{\Gamma}g\hmeas 1._\gamma\,dP(\gamma).
+    \end{equation}
+  \item Bate (2014), ``Structure of measures in Lipschitz
+    differentiability spaces'': characterizes differentiability spaces
+    using Alberti representations
+  \item S.~(2015--2016), shows that the ``Lip-lip'' inequality
+    is an \textbf{equality}, \textbf{necessary and sufficient} to have
+    differentiability, and that a.e.~tangents of differentiability spaces are
+    differentiability spaces.
+  \item Cheeger-Kleiner-S.: ``Infinitesimal structure of
+    differentiability spaces, and metric differentiation''.
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Fragmented connectivity}
+  \begin{itemize}
+  \item To prove a PI-inequality it is necessary to construct families of
+    curves joining points.
+  \item Bate \& Li (2016), ``The geometry of Radon-Nikodym Lipschitz
+    differentiability spaces'': if all Lipschitz $f:X\to \bigoplus_{l^1}l_n^\infty$ are
+    differentiable, can connect points avoiding sets of low density.
+  \item Eriksson-Bique (2016), ``Classifying Poincaré inequalities and
+    the local
+    geometry of RNP-differentiability spaces'': RNP-differentiability
+    spaces are PI-rectifiable.
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\section{New examples}
+\captionslide{New Examples: an alternative approach to quantitative
+  differentiation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{A PI-unrectifiable example}
+  \begin{itemize}
+  \item S.~(2016): An example of a differentiability space which is
+    PI-unrectifiable.
+  \item $X$ has a disconnected tangent at a.e.
+  \item Any Lipschitz $f:X\to l^2$ is differentiable a.e.
+  \item For $\varepsilon>0$ there is an
+    a.e.~\textbf{non}-differentiable $f:X\to l^{3+\varepsilon}$.
+  \item In the metric setting differentiability depends on the target!
+  \item Can ``probe'' Banach spaces with differentiability spaces.
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Building blocks}
+  \begin{itemize}
+  \item Non-quasiconvex diamonds.
+  \item Non-selfsimilar Inverse limit system (compare Laakso, Cheeger
+    \& Kleiner)
+  \item ``Tritanopic'' chromatic labels, Alberti representations and
+    the horizonatl gradient.
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Disconnected tangents}
+  \begin{itemize}
+  \item At a generic point there is a disconnected tangent.
+  \item It is possible to join pairs of points by using
+    ``horizontal'' paths and, if necessary, by using at most one
+    ``jump''
+  \item The jumps are unavoidable and break down the classical
+    differentiation argument.
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Classical quantitative differentiation}
+  \begin{itemize}
+  \item Jones (1988), ``Lipschitz and bi-Lipschitz functions''
+  \item Quantify how $f:Q\subset \real\to\real$ is close to a ``linear function''
+    on dyadic subdivisions $Q_{n,j}$
+  \item The error:
+    \begin{equation}
+      \alpha(f,Q_{n,j}) = \frac{1}{\hmeas 1.(Q_{n,j})}\inf_l\sup_{x\in
+        Q_{n,j}} |f(x)-l(x)|
+    \end{equation}
+  \item A bound on ``bad cubes'':
+    \begin{equation}
+      \sum_{Q_{n,j}: \alpha(f,Q_{n,j})\ge\varepsilon}\hmeas
+      1.(Q_{n,j})\lesssim\log(\varepsilon)\varepsilon^{-2}\hmeas 1.(Q). 
+    \end{equation}
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{(Tail)-recursive quantitative
+    differentiation}
+  \begin{itemize}
+  \item Take $f:X\to l^2$, we would like to claim that if $Q$ is a
+    quasiconvex diamond $1/n$-squeezed, $\|f(c_{green})-f(c_{red})\|_2 =
+    O(\varepsilon \diam Q/n)$.
+  \item The error is $\varepsilon/n$, decreasing in the tail of the
+    decomposition.
+  \item The decomposition is no longer dyadic or self-similar.
+  \item Using harmonic functions can prove:
+    \begin{equation}
+      \sum_{
+        \text{{\rm $Q$ is $\varepsilon$-bad}}}\frac{\varepsilon^2}{n_Q^3}\mu(Q)\lesssim
+      \glip f.^2.
+    \end{equation}
+  \end{itemize}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]\frametitle{Further directions}
+  \begin{itemize}
+    \item Classify $p$ : $f:X\to L^p$ is differentiable, $p=3$ is
+      critical.
+    \item The examples have analytic dimension $3$, lower to $1$.
+    \item Answer a question of Lang-Plaut: a doubling subset of $l^2$
+      not embeddable in finite-dimensional Euclidean spaces.
+  \end{itemize}
+\end{frame}
+\end{document}
